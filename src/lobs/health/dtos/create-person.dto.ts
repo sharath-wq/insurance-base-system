@@ -130,4 +130,12 @@ export class CreatePersonDto {
   @IsString()
   @IsOptional()
   endorsment_type?: string;
+
+  @IsDate()
+  @IsOptional()
+  created_date: Date;
+
+  @IsDate()
+  @IsOptional()
+  updated_date: Date;
 }

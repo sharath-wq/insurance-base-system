@@ -64,4 +64,12 @@ export class CreatePolicyDto {
   @IsString()
   @IsOptional()
   endorsment_type: string;
+
+  @IsDate()
+  @IsOptional()
+  created_date: Date;
+
+  @IsDate()
+  @IsOptional()
+  updated_date: Date;
 }
