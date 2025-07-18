@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from './entites/vehicle.entity';
 import { PolicyService } from 'src/core/services/policy.service';
 import { CreateVehicleDto } from './dtos/create-vehicle.dtos';
+import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
+import { Quote } from 'src/core/entities/quote.entity';
+import { QuoteService } from 'src/core/services/quote.service';
 
 @Injectable()
 export class AutoService {
+  private readonly logger = new Logger(AutoService.name);
   constructor(
     @InjectRepository(Vehicle)
     private vehicleRepository: Repository<Vehicle>,
     private policyService: PolicyService,
+    private quoteService: QuoteService,
   ) {}
 
   async createAutoPolicy(dto: CreateVehicleDto): Promise<Vehicle> {
@@ -32,7 +37,18 @@ export class AutoService {
       payment_refference_id: dto.payment_refference_id,
       is_endorsement: dto.is_endorsement!,
       endorsment_type: dto.endorsment_type!,
+      created_date: new Date(),
+      updated_date: new Date(),
     });
     return this.vehicleRepository.save(vehicle);
+  }
+
+  async createAutoQuote(dto: CreateQuoteDto): Promise<Quote> {
+    this.logger.log('Creating auto quote with DTO:', dto);
+    const quoteDto = {
+      ...dto,
+      lob_id: 2, // Auto LOB
+    };
+    return this.quoteService.createQuote(quoteDto);
   }
 }

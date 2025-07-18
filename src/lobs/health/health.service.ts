@@ -1,16 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Person } from './entities/person.entity';
 import { CreatePersonDto } from './dtos/create-person.dto';
 import { PolicyService } from '../../core/services/policy.service';
+import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
+import { Quote } from 'src/core/entities/quote.entity';
+import { QuoteService } from 'src/core/services/quote.service';
 
 @Injectable()
 export class HealthService {
+  private readonly logger = new Logger(HealthService.name);
+
   constructor(
     @InjectRepository(Person)
     private personRepository: Repository<Person>,
     private policyService: PolicyService,
+    private quoteService: QuoteService,
   ) {}
 
   async createHealthPolicy(dto: CreatePersonDto): Promise<Person> {
@@ -32,7 +38,18 @@ export class HealthService {
       payment_refference_id: dto.payment_refference_id,
       is_endorsement: dto.is_endorsement!,
       endorsment_type: dto.endorsment_type!,
+      created_date: new Date(),
+      updated_date: new Date(),
     });
     return this.personRepository.save(person);
+  }
+
+  async createHealthQuote(dto: CreateQuoteDto): Promise<Quote> {
+    this.logger.log('Creating health quote with DTO:', dto);
+    const quoteDto = {
+      ...dto,
+      lob_id: 1, // Health LOB
+    };
+    return this.quoteService.createQuote(quoteDto);
   }
 }

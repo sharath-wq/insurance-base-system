@@ -31,4 +31,10 @@ export class Quote {
 
   @Column({ type: 'varchar', length: 225 })
   applicant_details: string;
+
+  @Column({ type: 'date', nullable: true })
+  created_date: Date;
+
+  @Column({ type: 'date', nullable: true })
+  updated_date: Date;
 }
