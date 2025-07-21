@@ -115,4 +115,7 @@ export class Person {
 
   @Column({ type: 'timestamp', nullable: true })
   updated_date: Date;
+
+  @Column('decimal', { nullable: true })
+  base_premium: number;
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Person } from './entities/person.entity';
@@ -9,6 +13,8 @@ import { Nationality } from 'src/core/entities/nationality.entity';
 import { Occupation } from 'src/core/entities/occupation.entity';
 import { Relation } from 'src/core/entities/relation.entity';
 import { MaritalStatus } from 'src/core/entities/marital-status.entity';
+import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
+import { csvBufferToJson } from 'src/utils/csv-buffer-to-json';
 
 @Injectable()
 export class PersonService {
@@ -44,9 +50,6 @@ export class PersonService {
     const quote = await this.quoteRepository.findOne({
       where: { id: quote_id },
     });
-
-    console.log(quote, 'Fetched Quote');
-
     if (!quote) {
       throw new NotFoundException(`Quote with ID ${quote_id} not found`);
     }
@@ -235,5 +238,90 @@ export class PersonService {
   async remove(id: number): Promise<void> {
     const person = await this.findOne(id);
     await this.personRepository.remove(person);
+  }
+
+  async bulkCreate(
+    buffer: Buffer,
+    quote_id: string,
+  ): Promise<BulkCreateResponse> {
+    try {
+      const quote = await this.quoteRepository.findOne({
+        where: { id: +quote_id },
+      });
+      if (!quote) {
+        throw new NotFoundException(`Quote with ID ${quote_id} not found`);
+      }
+
+      const json = csvBufferToJson(buffer);
+      const memberCount = json.length;
+
+      const people: Person[] = [];
+
+      for (const record of json) {
+        const [identityType, nationality, occupation, relation, maritalStatus] =
+          await Promise.all([
+            this.identityTypeRepository.findOne({
+              where: { id: record.identity_type },
+            }),
+            this.nationalityRepository.findOne({
+              where: { id: record.nationality },
+            }),
+            this.occupationRepository.findOne({
+              where: { id: record.occupation_code },
+            }),
+            this.relationRepository.findOne({
+              where: { id: record.relation },
+            }),
+            this.maritalStatusRepository.findOne({
+              where: { id: record.marital_status },
+            }),
+          ]);
+
+        if (
+          !identityType ||
+          !nationality ||
+          !occupation ||
+          !relation ||
+          !maritalStatus
+        ) {
+          throw new BadRequestException(
+            `Invalid reference fields in record: ${JSON.stringify(record)}`,
+          );
+        }
+
+        const now = new Date();
+
+        console.log(record, 'this is the record');
+
+        const person = this.personRepository.create({
+          // Basic fields with fallbacks
+          ...record,
+
+          // Related entities
+          quote,
+          identity_type: identityType,
+          nationality,
+          occupation,
+          relation,
+          marital_status: maritalStatus,
+
+          // System-generated
+          insurance_id: `HEALTH-INS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          created_date: now,
+          updated_date: now,
+        });
+
+        people.push(person);
+      }
+
+      const result = await this.personRepository.save(people);
+
+      return {
+        members: result,
+        memberCount,
+      };
+    } catch (err: any) {
+      throw new BadRequestException(`Bulk create failed: ${err.message}`);
+    }
   }
 }
