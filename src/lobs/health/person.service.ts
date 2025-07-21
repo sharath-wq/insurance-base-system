@@ -324,4 +324,13 @@ export class PersonService {
       throw new BadRequestException(`Bulk create failed: ${err.message}`);
     }
   }
+
+  async updatePersons(quote_id: string, offering: string): Promise<number> {
+    const result = await this.personRepository.update(
+      { quote: { id: Number(quote_id) } }, // ✅ cast to number
+      { offering_code: offering },
+    );
+
+    return result.affected ?? 0;
+  }
 }

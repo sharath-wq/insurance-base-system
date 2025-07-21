@@ -17,6 +17,7 @@ import { Contact } from './entities/contact.entity';
 import { Address } from './entities/address.entity';
 import { PolicyService } from './services/policy.service';
 import { QuoteService } from './services/quote.service';
+import { Person } from 'src/lobs/health/entities/person.entity';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { QuoteService } from './services/quote.service';
       Driver,
       Contact,
       Address,
+      Person,
     ]),
   ],
   providers: [PolicyService, QuoteService],
