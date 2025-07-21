@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, JsonContains } from 'typeorm';
 import { Person } from './entities/person.entity';
 import { CreatePersonDto } from './dtos/create-person.dto';
 import { Quote } from 'src/core/entities/quote.entity';
@@ -116,6 +116,24 @@ export class PersonService {
   async findAll(): Promise<Person[]> {
     return this.personRepository.find({
       where: { insurance_id: Like('HEALTH-INS%') },
+      relations: [
+        'quote',
+        'identity_type',
+        'nationality',
+        'occupation',
+        'relation',
+        'marital_status',
+      ],
+    });
+  }
+
+  async findAllByQuoteId(quoteId: string): Promise<Person[]> {
+    return this.personRepository.find({
+      where: {
+        quote: {
+          id: Number(quoteId),
+        },
+      },
       relations: [
         'quote',
         'identity_type',

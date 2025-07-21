@@ -16,7 +16,6 @@ import { Person } from './entities/person.entity';
 import { CreatePersonDto } from './dtos/create-person.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
-import { diskStorage } from 'multer';
 
 @Controller('health/persons')
 export class PersonController {
@@ -30,6 +29,11 @@ export class PersonController {
   @Get()
   async findAll(): Promise<Person[]> {
     return this.personService.findAll();
+  }
+
+  @Get('get-members/:quoteId')
+  async getByQuoteId(@Param('quoteId') quoteId: string): Promise<Person[]> {
+    return this.personService.findAllByQuoteId(quoteId);
   }
 
   @Get(':id')
