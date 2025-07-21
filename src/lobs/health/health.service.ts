@@ -7,6 +7,7 @@ import { PolicyService } from '../../core/services/policy.service';
 import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
 import { Quote } from 'src/core/entities/quote.entity';
 import { QuoteService } from 'src/core/services/quote.service';
+import { generateQuoteName } from 'src/utils/generate-quote-name';
 
 @Injectable()
 export class HealthService {
@@ -48,6 +49,7 @@ export class HealthService {
     this.logger.log('Creating health quote with DTO:', dto);
     const quoteDto = {
       ...dto,
+      quote_name: await generateQuoteName('H'),
       lob_id: 1, // Health LOB
     };
     return this.quoteService.createQuote(quoteDto);

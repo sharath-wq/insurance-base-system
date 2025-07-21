@@ -7,6 +7,7 @@ import { CreateVehicleDto } from './dtos/create-vehicle.dtos';
 import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
 import { Quote } from 'src/core/entities/quote.entity';
 import { QuoteService } from 'src/core/services/quote.service';
+import { generateQuoteName } from 'src/utils/generate-quote-name';
 
 @Injectable()
 export class AutoService {
@@ -47,6 +48,7 @@ export class AutoService {
     this.logger.log('Creating auto quote with DTO:', dto);
     const quoteDto = {
       ...dto,
+      quote_name: await generateQuoteName('M'),
       lob_id: 2, // Auto LOB
     };
     return this.quoteService.createQuote(quoteDto);
