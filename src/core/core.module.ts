@@ -39,6 +39,6 @@ import { QuoteService } from './services/quote.service';
     ]),
   ],
   providers: [PolicyService, QuoteService],
-  exports: [PolicyService, QuoteService],
+  exports: [PolicyService, QuoteService, TypeOrmModule],
 })
 export class CoreModule {}

@@ -4,10 +4,13 @@ import { HealthService } from './health.service';
 import { HealthController } from './health.controller';
 import { Person } from './entities/person.entity';
 import { CoreModule } from '../../core/core.module';
+import { PersonController } from './person.controller';
+import { PersonService } from './person.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Person]), CoreModule],
-  controllers: [HealthController],
-  providers: [HealthService],
+  controllers: [HealthController, PersonController],
+  providers: [HealthService, PersonService],
+  exports: [HealthService, PersonService],
 })
 export class HealthModule {}
