@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { PolicyLob } from './policy-lob.entity';
 
 @Entity('quote')
 export class Quote {
@@ -37,4 +38,7 @@ export class Quote {
 
   @Column({ type: 'date', nullable: true })
   updated_date: Date;
+
+  @ManyToOne(() => PolicyLob)
+  lob: PolicyLob;
 }

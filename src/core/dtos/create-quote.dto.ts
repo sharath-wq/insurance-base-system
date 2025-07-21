@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsObject,
   IsNotEmpty,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateQuoteDto {
@@ -42,6 +43,6 @@ export class CreateQuoteDto {
   @IsNotEmpty()
   applicant_details: any;
 
-  @IsNotEmpty()
+  @IsNumber()
   lob_id: number;
 }
