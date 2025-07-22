@@ -42,6 +42,7 @@ export class PersonService {
       nationality,
       occupation_code,
       relation,
+      effective_date,
       marital_status,
       ...personData
     } = createPersonDto;
@@ -97,9 +98,19 @@ export class PersonService {
       );
     }
 
+    const effectiveDate = new Date(effective_date);
+    const expiryDate = new Date(effectiveDate);
+    expiryDate.setFullYear(effectiveDate.getFullYear() + 1);
+
     const person = this.personRepository.create({
       ...personData,
       quote,
+      start_date: new Date(),
+      expiry_date: expiryDate,
+      effective_date: new Date(effective_date),
+      company_id: 1,
+      member_type: 'Primary',
+      member_status: 'Active',
       identity_type: identityType,
       nationality: nationalityRecord,
       occupation: occupationRecord,
