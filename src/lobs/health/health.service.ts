@@ -8,6 +8,11 @@ import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
 import { Quote } from 'src/core/entities/quote.entity';
 import { QuoteService } from 'src/core/services/quote.service';
 import { generateQuoteName } from 'src/utils/generate-quote-name';
+import { IdentityType } from 'src/core/entities/identity-type.entity';
+import { Nationality } from 'src/core/entities/nationality.entity';
+import { Occupation } from 'src/core/entities/occupation.entity';
+import { Relation } from 'src/core/entities/relation.entity';
+import { MaritalStatus } from 'src/core/entities/marital-status.entity';
 
 @Injectable()
 export class HealthService {
@@ -21,15 +26,67 @@ export class HealthService {
     private personRepository: Repository<Person>,
     private policyService: PolicyService,
     private quoteService: QuoteService,
+
+    @InjectRepository(IdentityType)
+    private readonly identityTypeRepository: Repository<IdentityType>,
+
+    @InjectRepository(Nationality)
+    private readonly nationalityRepository: Repository<Nationality>,
+
+    @InjectRepository(Occupation)
+    private readonly occupationRepository: Repository<Occupation>,
+
+    @InjectRepository(Relation)
+    private readonly relationRepository: Repository<Relation>,
+
+    @InjectRepository(MaritalStatus)
+    private readonly maritalStatusRepository: Repository<MaritalStatus>,
   ) {}
 
   async createHealthPolicy(dto: CreatePersonDto): Promise<Person> {
-    const person = this.personRepository.create(dto);
+    const {
+      quote_id,
+      identity_type_id,
+      nationality,
+      occupation_code,
+      relation,
+      marital_status,
+      ...personData
+    } = dto;
+
+    // Fetch related entities
+    const quote = await this.quoteRepository.findOneByOrFail({ id: quote_id });
+    const identityType = await this.identityTypeRepository.findOneByOrFail({
+      id: identity_type_id,
+    });
+    const nationalityRecord = await this.nationalityRepository.findOneByOrFail({
+      code: nationality,
+    });
+    const occupation = await this.occupationRepository.findOneByOrFail({
+      code: occupation_code,
+    });
+    const relationRecord = await this.relationRepository.findOneByOrFail({
+      code: relation,
+    });
+    const maritalStatus = await this.maritalStatusRepository.findOneByOrFail({
+      code: marital_status,
+    });
+
+    const person = this.personRepository.create({
+      ...personData,
+      quote,
+      identity_type: identityType,
+      nationality: nationalityRecord,
+      occupation,
+      relation: relationRecord,
+      marital_status: maritalStatus,
+    });
+
     await this.policyService.createPolicy({
       quote_id: dto.quote_id,
-      status_id: 2, // DRAFT
-      lob_id: 1, // HEALTH
-      policy_status_id: 3, // DRAFT
+      status_id: 2,
+      lob_id: 1,
+      policy_status_id: 3,
       account_id: 1,
       start_date: new Date(dto.start_date),
       effective_date: new Date(dto.effective_date),
@@ -45,6 +102,7 @@ export class HealthService {
       created_date: new Date(),
       updated_date: new Date(),
     });
+
     return this.personRepository.save(person);
   }
 

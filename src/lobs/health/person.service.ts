@@ -39,10 +39,10 @@ export class PersonService {
     const {
       quote_id,
       identity_type_id,
-      nationality_id,
-      occupation_id,
-      relation_id,
-      marital_status_id,
+      nationality,
+      occupation_code,
+      relation,
+      marital_status,
       ...personData
     } = createPersonDto;
 
@@ -63,37 +63,37 @@ export class PersonService {
       );
     }
 
-    const nationality = await this.nationalityRepository.findOne({
-      where: { id: nationality_id },
+    const nationalityRecord = await this.nationalityRepository.findOne({
+      where: { code: nationality },
     });
-    if (!nationality) {
+    if (!nationalityRecord) {
       throw new NotFoundException(
-        `Nationality with ID ${nationality_id} not found`,
+        `Nationality with ID ${nationality} not found`,
       );
     }
 
-    const occupation = await this.occupationRepository.findOne({
-      where: { id: occupation_id },
+    const occupationRecord = await this.occupationRepository.findOne({
+      where: { code: occupation_code },
     });
-    if (!occupation) {
+    if (!occupationRecord) {
       throw new NotFoundException(
-        `Occupation with ID ${occupation_id} not found`,
+        `Occupation with ID ${occupation_code} not found`,
       );
     }
 
-    const relation = await this.relationRepository.findOne({
-      where: { id: relation_id },
+    const relationRecord = await this.relationRepository.findOne({
+      where: { code: relation },
     });
-    if (!relation) {
-      throw new NotFoundException(`Relation with ID ${relation_id} not found`);
+    if (!relationRecord) {
+      throw new NotFoundException(`Relation with ID ${relation} not found`);
     }
 
-    const maritalStatus = await this.maritalStatusRepository.findOne({
-      where: { id: marital_status_id },
+    const maritalStatusRecord = await this.maritalStatusRepository.findOne({
+      where: { code: marital_status },
     });
-    if (!maritalStatus) {
+    if (!maritalStatusRecord) {
       throw new NotFoundException(
-        `MaritalStatus with ID ${marital_status_id} not found`,
+        `MaritalStatus with ID ${marital_status} not found`,
       );
     }
 
@@ -101,10 +101,10 @@ export class PersonService {
       ...personData,
       quote,
       identity_type: identityType,
-      nationality,
-      occupation,
-      relation,
-      marital_status: maritalStatus,
+      nationality: nationalityRecord,
+      occupation: occupationRecord,
+      relation: relationRecord,
+      marital_status: maritalStatusRecord,
       insurance_id: `HEALTH-INS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       created_date: new Date(),
       updated_date: new Date(),
@@ -171,10 +171,10 @@ export class PersonService {
     const {
       quote_id,
       identity_type_id,
-      nationality_id,
-      occupation_id,
-      relation_id,
-      marital_status_id,
+      nationality,
+      occupation_code,
+      relation,
+      marital_status,
       ...updateData
     } = updatePersonDto;
 
@@ -200,52 +200,51 @@ export class PersonService {
       person.identity_type = identityType;
     }
 
-    if (nationality_id) {
-      const nationality = await this.nationalityRepository.findOne({
-        where: { id: nationality_id },
+    if (nationality) {
+      const nationalityRecord: any = await this.nationalityRepository.findOne({
+        where: { code: nationality },
       });
-      if (!nationality) {
+      if (!nationalityRecord) {
         throw new NotFoundException(
-          `Nationality with ID ${nationality_id} not found`,
+          `Nationality with ID ${nationality} not found`,
         );
       }
-      person.nationality = nationality;
+      person.nationality = nationalityRecord?.id;
     }
 
-    if (occupation_id) {
-      const occupation = await this.occupationRepository.findOne({
-        where: { id: occupation_id },
+    if (occupation_code) {
+      const occupation: any = await this.occupationRepository.findOne({
+        where: { code: occupation_code },
       });
       if (!occupation) {
         throw new NotFoundException(
-          `Occupation with ID ${occupation_id} not found`,
+          `Occupation with ID ${occupation_code} not found`,
         );
       }
-      person.occupation = occupation;
+      person.occupation = occupation.id;
     }
 
-    if (relation_id) {
-      const relation = await this.relationRepository.findOne({
-        where: { id: relation_id },
+    if (relation) {
+      const relationRecord: any = await this.relationRepository.findOne({
+        where: { code: relation },
       });
-      if (!relation) {
-        throw new NotFoundException(
-          `Relation with ID ${relation_id} not found`,
-        );
+      if (!relationRecord) {
+        throw new NotFoundException(`Relation with ID ${relation} not found`);
       }
-      person.relation = relation;
+      person.relation = relationRecord.id;
     }
 
-    if (marital_status_id) {
-      const maritalStatus = await this.maritalStatusRepository.findOne({
-        where: { id: marital_status_id },
-      });
-      if (!maritalStatus) {
+    if (marital_status) {
+      const maritalStatusRecord: any =
+        await this.maritalStatusRepository.findOne({
+          where: { code: marital_status },
+        });
+      if (!maritalStatusRecord) {
         throw new NotFoundException(
-          `MaritalStatus with ID ${marital_status_id} not found`,
+          `MaritalStatus with ID ${marital_status} not found`,
         );
       }
-      person.marital_status = maritalStatus;
+      person.marital_status = maritalStatusRecord.id;
     }
 
     Object.assign(person, updateData, { updated_date: new Date() });
@@ -308,8 +307,6 @@ export class PersonService {
         }
 
         const now = new Date();
-
-        console.log(record, 'this is the record');
 
         const person = this.personRepository.create({
           // Basic fields with fallbacks

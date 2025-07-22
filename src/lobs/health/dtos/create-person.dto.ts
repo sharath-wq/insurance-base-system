@@ -72,16 +72,16 @@ export class CreatePersonDto {
   mobile: number;
 
   @IsNumber()
-  nationality_id: number;
+  nationality: string;
 
   @IsNumber()
-  occupation_id: number;
+  occupation_code: string;
 
   @IsNumber()
-  relation_id: number;
+  relation: string;
 
   @IsNumber()
-  marital_status_id: number;
+  marital_status: string;
 
   @IsString()
   gender_code: string;
