@@ -15,6 +15,7 @@ import { Relation } from 'src/core/entities/relation.entity';
 import { MaritalStatus } from 'src/core/entities/marital-status.entity';
 import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
 import { csvBufferToJson } from 'src/utils/csv-buffer-to-json';
+import { RatingService } from 'src/jarus/services/rating.service';
 
 @Injectable()
 export class PersonService {
@@ -33,6 +34,8 @@ export class PersonService {
     private relationRepository: Repository<Relation>,
     @InjectRepository(MaritalStatus)
     private maritalStatusRepository: Repository<MaritalStatus>,
+
+    private readonly ratingService: RatingService,
   ) {}
 
   async create(createPersonDto: CreatePersonDto): Promise<Person> {
@@ -351,12 +354,16 @@ export class PersonService {
     }
   }
 
-  async updatePersons(quote_id: string, offering: string): Promise<number> {
-    const result = await this.personRepository.update(
+  async updatePersons(quote_id: string, offering: string): Promise<any> {
+    await this.personRepository.update(
       { quote: { id: Number(quote_id) } }, // ✅ cast to number
       { offering_code: offering },
     );
 
-    return result.affected ?? 0;
+    const newRatingMembers = await this.ratingService.getRatingFromJarus({
+      quote_id: quote_id,
+    });
+
+    return newRatingMembers;
   }
 }

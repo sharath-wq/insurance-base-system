@@ -8,21 +8,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Quote } from 'src/core/entities/quote.entity';
 import { Person } from 'src/lobs/health/entities/person.entity';
 import { Repository } from 'typeorm';
-import { QuoteService } from 'src/core/services/quote.service';
 import { createPayload } from '../utils/create-functions';
 
 @Injectable()
 export class RatingService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
 
     @InjectRepository(Quote)
     private quoteRepository: Repository<Quote>,
 
     @InjectRepository(Person)
     private personRepository: Repository<Person>,
-    private quoteService: QuoteService,
   ) {}
 
   async getRatingFromJarus(dto: RatingDto): Promise<any> {
