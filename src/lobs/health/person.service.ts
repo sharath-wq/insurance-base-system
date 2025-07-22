@@ -292,16 +292,16 @@ export class PersonService {
               where: { id: record.identity_type },
             }),
             this.nationalityRepository.findOne({
-              where: { id: record.nationality },
+              where: { code: record.nationality },
             }),
             this.occupationRepository.findOne({
-              where: { id: record.occupation_code },
+              where: { code: record.occupation_code },
             }),
             this.relationRepository.findOne({
-              where: { id: record.relation },
+              where: { code: record.relation },
             }),
             this.maritalStatusRepository.findOne({
-              where: { id: record.marital_status },
+              where: { code: record.marital_status },
             }),
           ]);
 

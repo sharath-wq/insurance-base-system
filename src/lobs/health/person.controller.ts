@@ -16,6 +16,7 @@ import { Person } from './entities/person.entity';
 import { CreatePersonDto } from './dtos/create-person.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
+import { BulkCreateDto } from './dtos/bulk-create.dto';
 
 @Controller('health/persons')
 export class PersonController {
@@ -58,8 +59,8 @@ export class PersonController {
   @UseInterceptors(FileInterceptor('file'))
   async bulkCreate(
     @UploadedFile() file: Express.Multer.File,
-    @Query('quote_id') quote_id: string,
+    @Body() body: BulkCreateDto,
   ): Promise<BulkCreateResponse> {
-    return this.personService.bulkCreate(file.buffer, quote_id);
+    return this.personService.bulkCreate(file.buffer, body.quote_id);
   }
 }
