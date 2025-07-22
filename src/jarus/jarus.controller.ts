@@ -1,9 +1,6 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { CoverageService } from './services/coverage.service';
 import { RatingService } from './services/rating.service';
-import { AttributeDto } from './dto/attributes.dto';
-import { CoverageDto } from './dto/coverage.dto';
-import { RatingDto } from './dto/rating.dto';
 import { AttributeService } from './services/attributes.service';
 
 @Controller('jarus')
