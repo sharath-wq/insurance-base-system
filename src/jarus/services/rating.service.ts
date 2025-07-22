@@ -69,9 +69,6 @@ export class RatingService {
     const body = createPayload(createPayloadInputs);
 
     try {
-      console.log(JSON.stringify(body, null, 2), '==> body');
-      console.log(url, '==> url');
-
       const response = await firstValueFrom(
         this.httpService.post(url, body, {
           headers: {
