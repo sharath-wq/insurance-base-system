@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { Person } from './entities/person.entity';
-import { CreatePersonDto } from './dtos/create-person.dto';
+import { Person } from '../entities/person.entity';
+import { CreatePersonDto } from '../dtos/create-person.dto';
 import { Quote } from 'src/core/entities/quote.entity';
 import { IdentityType } from 'src/core/entities/identity-type.entity';
 import { Nationality } from 'src/core/entities/nationality.entity';

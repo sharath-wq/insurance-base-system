@@ -18,6 +18,11 @@ import { Address } from './entities/address.entity';
 import { PolicyService } from './services/policy.service';
 import { QuoteService } from './services/quote.service';
 import { Person } from 'src/lobs/health/entities/person.entity';
+import { CoverageService } from './services/coverage.service';
+import { Coverable } from './entities/coverable.entity';
+import { CoverableType } from './entities/coverable-type.entity';
+import { Coverage } from './entities/coverage.entity';
+import { CovTerm } from './entities/cov-term.entity';
 
 @Module({
   imports: [
@@ -38,9 +43,13 @@ import { Person } from 'src/lobs/health/entities/person.entity';
       Contact,
       Address,
       Person,
+      Coverable,
+      CoverableType,
+      Coverage,
+      CovTerm,
     ]),
   ],
-  providers: [PolicyService, QuoteService],
-  exports: [PolicyService, QuoteService, TypeOrmModule],
+  providers: [PolicyService, QuoteService, CoverageService],
+  exports: [PolicyService, QuoteService, TypeOrmModule, CoverageService],
 })
 export class CoreModule {}

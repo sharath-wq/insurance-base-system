@@ -11,12 +11,12 @@ import {
   UploadedFile,
   Query,
 } from '@nestjs/common';
-import { PersonService } from './person.service';
-import { Person } from './entities/person.entity';
-import { CreatePersonDto } from './dtos/create-person.dto';
+import { PersonService } from '../services/person.service';
+import { Person } from '../entities/person.entity';
+import { CreatePersonDto } from '../dtos/create-person.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
-import { BulkCreateDto } from './dtos/bulk-create.dto';
+import { BulkCreateDto } from '../dtos/bulk-create.dto';
 
 @Controller('health/persons')
 export class PersonController {

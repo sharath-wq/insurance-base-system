@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Person } from './entities/person.entity';
-import { CreatePersonDto } from './dtos/create-person.dto';
-import { PolicyService } from '../../core/services/policy.service';
+import { Person } from '../entities/person.entity';
+import { CreatePersonDto } from '../dtos/create-person.dto';
+import { PolicyService } from '../../../core/services/policy.service';
 import { CreateQuoteDto } from 'src/core/dtos/create-quote.dto';
 import { Quote } from 'src/core/entities/quote.entity';
 import { QuoteService } from 'src/core/services/quote.service';
@@ -13,6 +13,8 @@ import { Nationality } from 'src/core/entities/nationality.entity';
 import { Occupation } from 'src/core/entities/occupation.entity';
 import { Relation } from 'src/core/entities/relation.entity';
 import { MaritalStatus } from 'src/core/entities/marital-status.entity';
+import { Coverage } from 'src/core/entities/coverage.entity';
+import { CoverageService } from 'src/core/services/coverage.service';
 
 @Injectable()
 export class HealthService {
@@ -41,6 +43,8 @@ export class HealthService {
 
     @InjectRepository(MaritalStatus)
     private readonly maritalStatusRepository: Repository<MaritalStatus>,
+
+    private readonly coverageService: CoverageService,
   ) {}
 
   async createHealthPolicy(dto: CreatePersonDto): Promise<Person> {
@@ -114,5 +118,39 @@ export class HealthService {
       lob_id: 1, // Health LOB
     };
     return this.quoteService.createQuote(quoteDto);
+  }
+
+  async createHealthCoverages(
+    quoteId: number,
+    coverableData: {
+      coverableItemId: number;
+      coverableType: string;
+      accountId: number;
+    },
+    coveragesData: {
+      category: string;
+      coverages: {
+        name: string;
+        code: string;
+        premium: number;
+        effectiveDate: Date;
+        expiryDate: Date;
+        terms: {
+          name: string;
+          code: string;
+          limit: number;
+          deductible: number;
+        }[];
+      }[];
+    }[],
+  ): Promise<Coverage[]> {
+    return this.coverageService.createCoveragesForQuote(
+      quoteId,
+      {
+        ...coverableData,
+        coverableType: coverableData.coverableType || 'health',
+      },
+      coveragesData,
+    );
   }
 }

@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { PolicyLob } from './policy-lob.entity';
+import { Coverable } from './coverable.entity';
 
 @Entity('quote')
 export class Quote {
@@ -41,4 +48,7 @@ export class Quote {
 
   @ManyToOne(() => PolicyLob)
   lob: PolicyLob;
+
+  @OneToMany(() => Coverable, (coverable) => coverable.quote)
+  coverables: Coverable[];
 }
