@@ -133,19 +133,33 @@ export class CoverageService {
       });
     }
 
-    // Create coverable
-    const coverable = await this.createCoverable({
-      quoteId,
-      coverableItemId: coverableData.coverableItemId,
-      coverableTypeId: coverableType.id,
-      accountId: coverableData.accountId,
-      createdDate: new Date(),
-      updatedDate: new Date(),
+    // Find existing coverable or create a new one
+    let coverable = await this.coverableRepository.findOne({
+      where: { quoteId, coverableItemId: coverableData.coverableItemId },
     });
+    if (!coverable) {
+      coverable = await this.createCoverable({
+        quoteId,
+        coverableItemId: coverableData.coverableItemId,
+        coverableTypeId: coverableType.id,
+        accountId: coverableData.accountId,
+        createdDate: new Date(),
+        updatedDate: new Date(),
+      });
+    }
+
+    // Delete existing coverage and cov_term records for the coverable
+    const existingCoverages = await this.coverageRepository.find({
+      where: { coverableId: coverable.id },
+    });
+    for (const coverage of existingCoverages) {
+      await this.covTermRepository.delete({ coverageId: coverage.id });
+    }
+    await this.coverageRepository.delete({ coverableId: coverable.id });
 
     const createdCoverages: Coverage[] = [];
 
-    // Create coverages and terms for each category
+    // Create new coverages and terms for each category
     for (const category of coveragesData) {
       for (const coverageData of category.coverages) {
         const coverage = await this.createCoverage(
