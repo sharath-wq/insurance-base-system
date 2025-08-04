@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Coverage } from './coverage.entity';
 import { Contact } from './contact.entity';
@@ -31,11 +32,14 @@ export class CovTerm {
   deductibleVal: number;
 
   @ManyToOne(() => Coverage, { nullable: true })
+  @JoinColumn({ name: 'covID' })
   covID: Coverage;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 
   @ManyToOne(() => CovTerm, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: CovTerm;
 }

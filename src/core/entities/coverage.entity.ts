@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Coverable } from './coverable.entity';
 import { Contact } from './contact.entity';
@@ -27,6 +28,7 @@ export class Coverage {
   premiumAmt: number;
 
   @ManyToOne(() => Coverable, { nullable: true })
+  @JoinColumn({ name: 'coverableID' })
   coverableID: Coverable;
 
   @Column({ type: 'date', nullable: true })
@@ -36,9 +38,11 @@ export class Coverage {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 
   @ManyToOne(() => Coverage, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: Coverage;
 
   @OneToMany(() => CovTerm, (covTerm) => covTerm.covID)

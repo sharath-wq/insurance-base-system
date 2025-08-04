@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ListState, ListCountry } from '../../common/enums';
 import { Contact } from './contact.entity';
 
@@ -44,5 +44,6 @@ export class Address {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

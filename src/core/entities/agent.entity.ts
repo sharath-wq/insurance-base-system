@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Contact } from './contact.entity';
 import { Agency } from './agency.entity';
 
@@ -17,11 +17,14 @@ export class Agent {
   number: string;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'contact' })
   contact: Contact;
 
   @ManyToOne(() => Agency, { nullable: true })
+  @JoinColumn({ name: 'agencyID' })
   agencyID: Agency;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

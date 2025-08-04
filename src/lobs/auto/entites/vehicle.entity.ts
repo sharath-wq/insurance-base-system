@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Contact } from '../../../core/entities/contact.entity';
 
 @Entity('vehicle')
@@ -37,8 +37,10 @@ export class Vehicle {
   expirationDt: Date;
 
   @ManyToOne(() => Vehicle, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: Vehicle;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

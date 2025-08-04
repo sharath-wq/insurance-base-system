@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ListTravelReason, ListCountry } from '../../common/enums';
 
 @Entity('trip')
@@ -25,5 +25,6 @@ export class Trip {
   expirationDt: Date;
 
   @ManyToOne(() => Trip, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: Trip;
 }

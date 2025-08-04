@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Contact } from './contact.entity';
 import { ListContactRole } from '../../common/enums';
 
@@ -14,6 +14,7 @@ export class PolicyContactRole {
   updateDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'contactID' })
   contactID: Contact;
 
   @Column({ type: 'enum', enum: ListContactRole, nullable: true })
@@ -26,5 +27,6 @@ export class PolicyContactRole {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

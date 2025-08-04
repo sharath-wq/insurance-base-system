@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Address } from './address.entity';
 import { ListContactType } from '../../common/enums';
 
@@ -47,12 +47,15 @@ export class Contact {
   workNo: number;
 
   @ManyToOne(() => Address, { nullable: true })
+  @JoinColumn({ name: 'billingAddr' })
   billingAddr: Address;
 
   @ManyToOne(() => Address, { nullable: true })
+  @JoinColumn({ name: 'mailingAddr' })
   mailingAddr: Address;
 
   @ManyToOne(() => Address, { nullable: true })
+  @JoinColumn({ name: 'homeAddr' })
   homeAddr: Address;
 
   @Column({ type: 'varchar', nullable: true })
@@ -68,5 +71,6 @@ export class Contact {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

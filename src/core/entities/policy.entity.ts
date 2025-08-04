@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { PolicyContactRole } from './policy-contact-role.entity';
 import { Trip } from './trip.entity';
 import { Agent } from './agent.entity';
@@ -46,6 +46,7 @@ export class Policy {
   status: ListPolicyStatus;
 
   @ManyToOne(() => PolicyContactRole, { nullable: true })
+  @JoinColumn({ name: 'holderID' })
   holderID: PolicyContactRole;
 
   @Column({ type: 'date', nullable: true })
@@ -58,6 +59,7 @@ export class Policy {
   rejectReason: string;
 
   @ManyToOne(() => Trip, { nullable: true })
+  @JoinColumn({ name: 'tripID' })
   tripID: Trip;
 
   @Column({ type: 'varchar', nullable: true })
@@ -82,11 +84,14 @@ export class Policy {
   paymentSchdTypeID: ListPaymentScheduleType;
 
   @ManyToOne(() => Agent, { nullable: true })
+  @JoinColumn({ name: 'agent' })
   agent: Agent;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 
   @ManyToOne(() => Policy, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: Policy;
 }

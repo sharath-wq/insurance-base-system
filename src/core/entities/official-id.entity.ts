@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Contact } from './contact.entity';
 import { ListOfficialIDType } from '../../common/enums';
 
@@ -14,6 +14,7 @@ export class OfficialID {
   updateDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'contactID' })
   contactID: Contact;
 
   @Column({ type: 'enum', enum: ListOfficialIDType, nullable: true })

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Contact } from './contact.entity';
 
 @Entity('contact_history')
@@ -16,6 +16,7 @@ export class ContactHistory {
   fieldChanged: string;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'contactID' })
   contactID: Contact;
 
   @Column({ type: 'varchar', nullable: true })
@@ -25,5 +26,6 @@ export class ContactHistory {
   newValue: string;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

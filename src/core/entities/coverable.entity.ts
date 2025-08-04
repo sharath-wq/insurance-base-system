@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Quote } from './quote.entity';
 import { Vehicle } from '../../lobs/auto/entites/vehicle.entity';
@@ -27,15 +28,19 @@ export class Coverable {
   type: ListCoverable;
 
   @ManyToOne(() => Quote, { nullable: true })
+  @JoinColumn({ name: 'quoteID' })
   quoteID: Quote;
 
   @ManyToOne(() => Vehicle, { nullable: true })
+  @JoinColumn({ name: 'caVehicleID' })
   caVehicleID: Vehicle;
 
   @ManyToOne(() => Vehicle, { nullable: true })
+  @JoinColumn({ name: 'paVehicleID' })
   paVehicleID: Vehicle;
 
   @ManyToOne(() => PolicyContactRole, { nullable: true })
+  @JoinColumn({ name: 'contactID' })
   contactID: PolicyContactRole;
 
   @Column({ type: 'date', nullable: true })
@@ -45,9 +50,11 @@ export class Coverable {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 
   @ManyToOne(() => Coverable, { nullable: true })
+  @JoinColumn({ name: 'basedOnID' })
   basedOnID: Coverable;
 
   @OneToMany(() => Coverage, (coverage) => coverage.coverableID)

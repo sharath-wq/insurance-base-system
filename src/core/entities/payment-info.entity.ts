@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Policy } from './policy.entity';
 import { Contact } from './contact.entity';
 import { ListPaymentMode } from '../../common/enums';
@@ -33,8 +33,10 @@ export class PaymentInfo {
   paymentMode: ListPaymentMode;
 
   @ManyToOne(() => Policy, { nullable: true })
+  @JoinColumn({ name: 'policyID' })
   policyID: Policy;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }

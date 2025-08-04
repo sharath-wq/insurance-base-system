@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Policy } from './policy.entity';
 import { Contact } from './contact.entity';
 import { ListClaimStatus } from '../../common/enums';
@@ -36,6 +36,7 @@ export class Claim {
   status: ListClaimStatus;
 
   @ManyToOne(() => Policy, { nullable: true })
+  @JoinColumn({ name: 'policyID' })
   policyID: Policy;
 
   @Column({ type: 'date', nullable: true })
@@ -45,5 +46,6 @@ export class Claim {
   expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
+  @JoinColumn({ name: 'updateUser' })
   updateUser: Contact;
 }
