@@ -10,6 +10,7 @@ export class CreateQuoteDto {
   @IsBoolean()
   isSelected?: boolean;
 
+  // Quote date will be automatically set to current date during creation
   @IsOptional()
   @IsDate()
   quoteDt?: Date;
@@ -22,10 +23,12 @@ export class CreateQuoteDto {
   @IsNumber()
   taxAmt?: number;
 
+  // Effective date comes from frontend
   @IsOptional()
   @IsDate()
   effectiveDt?: Date;
 
+  // Expiration date will be automatically calculated as effectiveDt + 1 year
   @IsOptional()
   @IsDate()
   expirationDt?: Date;

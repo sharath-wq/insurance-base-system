@@ -79,7 +79,7 @@ export class RatingService {
       
       // Update member premiums and quote premium in the database
       await this.updateMemberPremiums(quoteId, extracted.memberDetails);
-      await this.updateQuotePremium(quoteId, extracted.policyDetails.fullTermAmount);
+      await this.updateQuotePremium(quoteId, extracted.policyDetails);
       
       return extracted;
     } catch (error: any) {
@@ -130,13 +130,14 @@ export class RatingService {
     }
   }
 
-  private async updateQuotePremium(quoteId: string, fullTermAmount: number): Promise<void> {
+  private async updateQuotePremium(quoteId: string, policyDetails: any): Promise<void> {
     try {
-      // Update the quote with the total premium amount
+      // Update the quote with the total premium amount and tax amount
       await this.quoteRepository.update(
         { ID: Number(quoteId) },
         {
-          premiumAmt: fullTermAmount,
+          premiumAmt: policyDetails.fullTermAmount,
+          taxAmt: policyDetails.totalTaxAmount || 0,
           updateDt: new Date(),
         },
       );

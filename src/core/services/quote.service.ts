@@ -19,11 +19,22 @@ export class QuoteService {
 
   async createQuote(dto: CreateQuoteDto): Promise<Quote> {
     this.logger.log('Creating quote with DTO:', dto);
+    
+    // Calculate expiration date as effective date + 1 year
+    let expirationDt: Date | undefined;
+    if (dto.effectiveDt) {
+      expirationDt = new Date(dto.effectiveDt);
+      expirationDt.setFullYear(expirationDt.getFullYear() + 1);
+    }
+    
     const quote = this.quoteRepository.create({
       ...dto,
+      quoteDt: new Date(), // Set quote date to current date
+      expirationDt, // Calculated expiration date (effective date + 1 year)
       createDt: new Date(),
       updateDt: new Date(),
     } as any);
+    
     this.logger.log('Quote entity created:', quote);
     const result = await this.quoteRepository.save(quote);
     return Array.isArray(result) ? result[0] : result;

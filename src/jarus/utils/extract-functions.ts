@@ -173,11 +173,29 @@ export function extractPolicyAndMemberDetails(response: any) {
   // Extract the fullTermAmount from rateRuleLogs
   const rateLogs = response?.rateRuleLogs || [];
 
+  // Calculate total tax amount by summing up VAT amounts from all members
+  const totalTaxAmount = rateLogs
+    .filter((log: any) => log.variable === 'VATamount' && log.event === 'END')
+    .reduce((sum: number, log: any) => {
+      const vatAmount = parseFloat(log.result?.replace(/,/g, '') || '0');
+      return sum + vatAmount;
+    }, 0);
+
+  // Calculate total pre-tax amount
+  const totalPreTaxAmount = rateLogs
+    .filter((log: any) => log.variable === 'TotalPreTax' && log.event === 'END')
+    .reduce((sum: number, log: any) => {
+      const preTaxAmount = parseFloat(log.result?.replace(/,/g, '') || '0');
+      return sum + preTaxAmount;
+    }, 0);
+
   // Policy details
   const policyDetails = {
     agencyCode: policyDetail?.agencyCode,
     companyCode: policyDetail?.companyCode,
     fullTermAmount: policyDetail?.fullTermAmount,
+    totalTaxAmount: totalTaxAmount,
+    totalPreTaxAmount: totalPreTaxAmount,
     policyId: policyDetail?.policyId,
     primaryRiskState: policyDetail?.primaryRiskState,
     producerCode: policyDetail?.producerCode,
