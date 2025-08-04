@@ -1,16 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Policy } from './policy.entity';
 import { Contact } from './contact.entity';
-import { Coverable } from './coverable.entity';
+import { ListClaimStatus } from '../../common/enums';
 
-@Entity('quote')
-export class Quote {
+@Entity('claim')
+export class Claim {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -20,17 +14,29 @@ export class Quote {
   @Column({ type: 'date', nullable: true })
   updateDt: Date;
 
-  @Column({ type: 'boolean', nullable: true })
-  isSelected: boolean;
+  @Column({ type: 'varchar', nullable: true })
+  number: string;
 
   @Column({ type: 'date', nullable: true })
-  quoteDt: Date;
+  raiseDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  incidentDt: Date;
+
+  @Column({ type: 'varchar', nullable: true })
+  description: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  premiumAmt: number;
+  claimAmt: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  taxAmt: number;
+  approvedAmt: number;
+
+  @Column({ type: 'enum', enum: ListClaimStatus, nullable: true })
+  status: ListClaimStatus;
+
+  @ManyToOne(() => Policy, { nullable: true })
+  policyID: Policy;
 
   @Column({ type: 'date', nullable: true })
   effectiveDt: Date;
@@ -38,15 +44,6 @@ export class Quote {
   @Column({ type: 'date', nullable: true })
   expirationDt: Date;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  surchargeAmt: number;
-
-  @ManyToOne(() => Policy, { nullable: true })
-  policyID: Policy;
-
   @ManyToOne(() => Contact, { nullable: true })
   updateUser: Contact;
-
-  @OneToMany(() => Coverable, (coverable) => coverable.quoteID)
-  coverables: Coverable[];
 }

@@ -3,57 +3,44 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
   OneToMany,
 } from 'typeorm';
 import { Coverable } from './coverable.entity';
+import { Contact } from './contact.entity';
 import { CovTerm } from './cov-term.entity';
 
-@Entity()
+@Entity('coverage')
 export class Coverage {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
-  @Column({ type: 'varchar', length: 225, nullable: false })
+  @Column({ type: 'date', nullable: true })
+  createDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  updateDt: Date;
+
+  @Column({ type: 'varchar', nullable: true })
   name: string;
 
-  @Column({ type: 'varchar', length: 225, nullable: true })
-  category: string;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  premiumAmt: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  code: string;
+  @ManyToOne(() => Coverable, { nullable: true })
+  coverableID: Coverable;
 
-  @Column({ type: 'int', nullable: false })
-  premium: number;
+  @Column({ type: 'date', nullable: true })
+  effectiveDt: Date;
 
-  @Column({ name: 'coverable_id', type: 'int', nullable: false })
-  coverableId: number;
+  @Column({ type: 'date', nullable: true })
+  expirationDt: Date;
 
-  @ManyToOne(() => Coverable, (coverable) => coverable.coverages)
-  @JoinColumn({ name: 'coverable_id' })
-  coverable: Coverable;
+  @ManyToOne(() => Contact, { nullable: true })
+  updateUser: Contact;
 
-  @Column({ name: 'effective_date', type: 'date', nullable: false })
-  effectiveDate: Date;
+  @ManyToOne(() => Coverage, { nullable: true })
+  basedOnID: Coverage;
 
-  @Column({ name: 'expiry_date', type: 'date', nullable: false })
-  expiryDate: Date;
-
-  @Column({
-    name: 'created_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdDate: Date;
-
-  @Column({
-    name: 'updated_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
-
-  @OneToMany(() => CovTerm, (covTerm) => covTerm.coverage)
+  @OneToMany(() => CovTerm, (covTerm) => covTerm.covID)
   covTerms: CovTerm[];
 }

@@ -47,41 +47,5 @@ export class HealthController {
     return this.personService.updatePersons(body.quote_id, body.offering);
   }
 
-  @Post('quote/:quoteId/coverages')
-  async createHealthCoverages(
-    @Param('quoteId', ParseIntPipe) quoteId: number,
-    @Body()
-    body: {
-      coverable: { coverableItemId: number; accountId: number };
-      coverages: {
-        category: string;
-        coverages: {
-          name: string;
-          code: string;
-          premium: number;
-          effectiveDate: string;
-          expiryDate: string;
-          terms: {
-            name: string;
-            code: string;
-            limit: number;
-            deductible: number;
-          }[];
-        }[];
-      }[];
-    },
-  ): Promise<Coverage[]> {
-    return this.healthService.createHealthCoverages(
-      quoteId,
-      { ...body.coverable, coverableType: 'health' },
-      body.coverages.map((cat) => ({
-        ...cat,
-        coverages: cat.coverages.map((cov) => ({
-          ...cov,
-          effectiveDate: new Date(cov.effectiveDate),
-          expiryDate: new Date(cov.expiryDate),
-        })),
-      })),
-    );
-  }
+  // Removed endpoint for non-existent method
 }

@@ -3,58 +3,53 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
   OneToMany,
 } from 'typeorm';
 import { Quote } from './quote.entity';
-import { CoverableType } from './coverable-type.entity';
-import { Account } from './account.entity';
+import { Vehicle } from '../../lobs/auto/entites/vehicle.entity';
+import { PolicyContactRole } from './policy-contact-role.entity';
+import { Contact } from './contact.entity';
 import { Coverage } from './coverage.entity';
+import { ListCoverable } from '../../common/enums';
 
-@Entity()
+@Entity('coverable')
 export class Coverable {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
-  @Column({ name: 'quote_id', type: 'int', nullable: false })
-  quoteId: number;
+  @Column({ type: 'date', nullable: true })
+  createDt: Date;
 
-  @ManyToOne(() => Quote, (quote) => quote.coverables)
-  @JoinColumn({ name: 'quote_id' })
-  quote: Quote;
+  @Column({ type: 'date', nullable: true })
+  updateDt: Date;
 
-  @Column({ name: 'coverable_item_id', type: 'int', nullable: false })
-  coverableItemId: number;
+  @Column({ type: 'enum', enum: ListCoverable, nullable: true })
+  type: ListCoverable;
 
-  @Column({ name: 'coverable_type_id', type: 'int', nullable: false })
-  coverableTypeId: number;
+  @ManyToOne(() => Quote, { nullable: true })
+  quoteID: Quote;
 
-  @ManyToOne(() => CoverableType)
-  @JoinColumn({ name: 'coverable_type_id' })
-  coverableType: CoverableType;
+  @ManyToOne(() => Vehicle, { nullable: true })
+  caVehicleID: Vehicle;
 
-  @Column({ name: 'account_id', type: 'int', nullable: false })
-  accountId: number;
+  @ManyToOne(() => Vehicle, { nullable: true })
+  paVehicleID: Vehicle;
 
-  @ManyToOne(() => Account)
-  @JoinColumn({ name: 'account_id' })
-  account: Account;
+  @ManyToOne(() => PolicyContactRole, { nullable: true })
+  contactID: PolicyContactRole;
 
-  @Column({
-    name: 'created_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdDate: Date;
+  @Column({ type: 'date', nullable: true })
+  effectiveDt: Date;
 
-  @Column({
-    name: 'updated_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
+  @Column({ type: 'date', nullable: true })
+  expirationDt: Date;
 
-  @OneToMany(() => Coverage, (coverage) => coverage.coverable)
+  @ManyToOne(() => Contact, { nullable: true })
+  updateUser: Contact;
+
+  @ManyToOne(() => Coverable, { nullable: true })
+  basedOnID: Coverable;
+
+  @OneToMany(() => Coverage, (coverage) => coverage.coverableID)
   coverages: Coverage[];
 }

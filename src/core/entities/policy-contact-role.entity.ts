@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Contact } from './contact.entity';
+import { ListContactRole } from '../../common/enums';
 
-@Entity('agency')
-export class Agency {
+@Entity('policy_contact_role')
+export class PolicyContactRole {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -12,11 +13,17 @@ export class Agency {
   @Column({ type: 'date', nullable: true })
   updateDt: Date;
 
-  @Column({ type: 'varchar', nullable: true })
-  number: string;
-
   @ManyToOne(() => Contact, { nullable: true })
-  primaryContact: Contact;
+  contactID: Contact;
+
+  @Column({ type: 'enum', enum: ListContactRole, nullable: true })
+  role: ListContactRole;
+
+  @Column({ type: 'date', nullable: true })
+  effectiveDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  expirationDt: Date;
 
   @ManyToOne(() => Contact, { nullable: true })
   updateUser: Contact;

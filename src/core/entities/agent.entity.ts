@@ -1,57 +1,27 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { IdentityType } from './identity-type.entity';
+import { Contact } from './contact.entity';
 import { Agency } from './agency.entity';
 
 @Entity('agent')
 export class Agent {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
-  @Column({ type: 'varchar', length: 225 })
-  name: string;
+  @Column({ type: 'date', nullable: true })
+  createDt: Date;
 
-  @Column({ type: 'integer' })
-  agent_id: number;
+  @Column({ type: 'date', nullable: true })
+  updateDt: Date;
 
-  @ManyToOne(() => IdentityType)
-  identity_type: IdentityType;
+  @Column({ type: 'varchar', nullable: true })
+  number: string;
 
-  @Column({ type: 'varchar', length: 225 })
-  email: string;
+  @ManyToOne(() => Contact, { nullable: true })
+  contact: Contact;
 
-  @Column({ type: 'numeric', precision: 10, scale: 0 })
-  mobile: number;
+  @ManyToOne(() => Agency, { nullable: true })
+  agencyID: Agency;
 
-  @Column({ type: 'integer' })
-  agent_code: number;
-
-  @Column({ type: 'varchar', length: 225 })
-  user_name: string;
-
-  @Column({ type: 'varchar', length: 225 })
-  status: string;
-
-  @Column({ type: 'varchar', length: 225 })
-  agent_type: string;
-
-  @Column({ type: 'boolean' })
-  is_admin: boolean;
-
-  @Column({ type: 'boolean' })
-  is_tenant: boolean;
-
-  @Column({ type: 'boolean' })
-  is_user: boolean;
-
-  @Column({ type: 'varchar', length: 225 })
-  access_type: string;
-
-  @ManyToOne(() => Agency)
-  agency: Agency;
-
-  @Column({ type: 'timestamp', nullable: true })
-  created_date: Date;
-
-  @Column({ type: 'timestamp', nullable: true })
-  updated_date: Date;
+  @ManyToOne(() => Contact, { nullable: true })
+  updateUser: Contact;
 }

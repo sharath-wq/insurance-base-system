@@ -24,6 +24,5 @@ export class CoverableType {
   })
   updatedDate: Date;
 
-  @OneToMany(() => Coverable, (coverable) => coverable.coverableType)
-  coverables: Coverable[];
+  // Relations removed as they don't match new schema
 }

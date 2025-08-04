@@ -1,48 +1,40 @@
 import {
-  IsString,
   IsDate,
   IsBoolean,
-  IsObject,
-  IsNotEmpty,
+  IsOptional,
   IsNumber,
 } from 'class-validator';
 
 export class CreateQuoteDto {
-  @IsString()
-  @IsNotEmpty()
-  quote_name: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  effective_date: Date;
-
-  @IsDate()
-  @IsNotEmpty()
-  expiration_date: Date;
-
-  @IsString()
-  @IsNotEmpty()
-  agency: string;
-
-  @IsString()
-  @IsNotEmpty()
-  producer: string;
-
-  @IsString()
-  @IsNotEmpty()
-  company: string;
-
-  @IsString()
-  @IsNotEmpty()
-  risk_state: string;
-
+  @IsOptional()
   @IsBoolean()
-  is_existing_policy: boolean;
+  isSelected?: boolean;
 
-  @IsObject()
-  @IsNotEmpty()
-  applicant_details: any;
+  @IsOptional()
+  @IsDate()
+  quoteDt?: Date;
 
+  @IsOptional()
   @IsNumber()
-  lob_id: number;
+  premiumAmt?: number;
+
+  @IsOptional()
+  @IsNumber()
+  taxAmt?: number;
+
+  @IsOptional()
+  @IsDate()
+  effectiveDt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  expirationDt?: Date;
+
+  @IsOptional()
+  @IsNumber()
+  surchargeAmt?: number;
+
+  @IsOptional()
+  @IsNumber()
+  policyID?: number;
 }

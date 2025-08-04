@@ -20,37 +20,17 @@ export class AutoService {
   ) {}
 
   async createAutoPolicy(dto: CreateVehicleDto): Promise<Vehicle> {
-    const vehicle = this.vehicleRepository.create(dto);
-    await this.policyService.createPolicy({
-      quote_id: dto.quote_id,
-      status_id: 2, // DRAFT
-      lob_id: 2, // AUTO
-      policy_status_id: 3, // DRAFT
-      account_id: 1,
-      start_date: new Date(dto.start_date!),
-      effective_date: new Date(dto.effective_date!),
-      expiry_date: new Date(dto.expiry_date!),
-      premium_novat: dto.premium_novat!,
-      vat: dto.vat!,
-      total_fee: dto.total_fee!,
-      total_discount: dto.total_discount!,
-      premium: dto.premium,
-      payment_refference_id: dto.payment_refference_id,
-      is_endorsement: dto.is_endorsement!,
-      endorsment_type: dto.endorsment_type!,
-      created_date: new Date(),
-      updated_date: new Date(),
-    });
-    return this.vehicleRepository.save(vehicle);
+    const vehicle = this.vehicleRepository.create({
+      ...dto,
+      createDt: new Date(),
+      updateDt: new Date(),
+    } as any);
+    const result = await this.vehicleRepository.save(vehicle);
+    return Array.isArray(result) ? result[0] : result;
   }
 
   async createAutoQuote(dto: CreateQuoteDto): Promise<Quote> {
     this.logger.log('Creating auto quote with DTO:', dto);
-    const quoteDto = {
-      ...dto,
-      quote_name: await generateQuoteName('M'),
-      lob_id: 2, // Auto LOB
-    };
-    return this.quoteService.createQuote(quoteDto);
+    return this.quoteService.createQuote(dto);
   }
 }

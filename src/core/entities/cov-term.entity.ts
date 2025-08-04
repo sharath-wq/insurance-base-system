@@ -3,46 +3,39 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 import { Coverage } from './coverage.entity';
+import { Contact } from './contact.entity';
 
-@Entity()
+@Entity('cov_term')
 export class CovTerm {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
-  @Column({ type: 'varchar', length: 225, nullable: false })
+  @Column({ type: 'date', nullable: true })
+  createDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  updateDt: Date;
+
+  @Column({ type: 'varchar', nullable: true })
   name: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  code: string;
+  @Column({ type: 'varchar', nullable: true })
+  stringVal: string;
 
-  @Column({ type: 'int', nullable: false })
-  limit: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  limitVal: number;
 
-  @Column({ type: 'int', nullable: false })
-  deductible: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  deductibleVal: number;
 
-  @Column({ name: 'coverage_id', type: 'int', nullable: false })
-  coverageId: number;
+  @ManyToOne(() => Coverage, { nullable: true })
+  covID: Coverage;
 
-  @ManyToOne(() => Coverage, (coverage) => coverage.covTerms)
-  @JoinColumn({ name: 'coverage_id' })
-  coverage: Coverage;
+  @ManyToOne(() => Contact, { nullable: true })
+  updateUser: Contact;
 
-  @Column({
-    name: 'created_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdDate: Date;
-
-  @Column({
-    name: 'updated_date',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
+  @ManyToOne(() => CovTerm, { nullable: true })
+  basedOnID: CovTerm;
 }

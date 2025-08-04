@@ -1,75 +1,98 @@
 import {
   IsNumber,
   IsDate,
-  IsBoolean,
   IsString,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
+import { ListPolicyStatus, ListProduct, ListTransactionType, ListPaymentScheduleType } from '../../common/enums';
 
 export class CreatePolicyDto {
-  @IsNumber()
-  quote_id: number;
-
-  @IsNumber()
-  status_id: number;
-
-  @IsNumber()
-  lob_id: number;
-
-  @IsNumber()
-  policy_status_id: number;
-
-  @IsNumber()
-  account_id: number;
+  @IsString()
+  @IsOptional()
+  QuoteNo?: string;
 
   @IsDate()
   @IsOptional()
-  start_date: Date;
+  startDt?: Date;
 
   @IsDate()
   @IsOptional()
-  effective_date: Date;
+  endDt?: Date;
 
   @IsDate()
   @IsOptional()
-  expiry_date: Date;
+  quoteDt?: Date;
+
+  @IsDate()
+  @IsOptional()
+  issueDt?: Date;
 
   @IsNumber()
   @IsOptional()
-  vat: number;
+  premiumAmt?: number;
 
   @IsNumber()
   @IsOptional()
-  total_fee: number;
+  taxAmt?: number;
+
+  @IsEnum(ListPolicyStatus)
+  @IsOptional()
+  status?: ListPolicyStatus;
 
   @IsNumber()
   @IsOptional()
-  total_discount?: number;
+  holderID?: number;
 
-  @IsNumber()
+  @IsDate()
   @IsOptional()
-  premium: number;
+  firstStartDt?: Date;
 
-  @IsNumber()
+  @IsDate()
   @IsOptional()
-  premium_novat: number;
-
-  @IsNumber()
-  payment_refference_id: number;
-
-  @IsBoolean()
-  @IsOptional()
-  is_endorsement: boolean;
+  rejectDt?: Date;
 
   @IsString()
   @IsOptional()
-  endorsment_type: string;
+  rejectReason?: string;
+
+  @IsNumber()
+  @IsOptional()
+  tripID?: number;
+
+  @IsString()
+  @IsOptional()
+  Number?: string;
+
+  @IsEnum(ListProduct)
+  @IsOptional()
+  productID?: ListProduct;
 
   @IsDate()
   @IsOptional()
-  created_date: Date;
+  effectiveDt?: Date;
 
   @IsDate()
   @IsOptional()
-  updated_date: Date;
+  expirationDt?: Date;
+
+  @IsEnum(ListTransactionType)
+  @IsOptional()
+  txnTypeID?: ListTransactionType;
+
+  @IsNumber()
+  @IsOptional()
+  surchargeAmt?: number;
+
+  @IsEnum(ListPaymentScheduleType)
+  @IsOptional()
+  paymentSchdTypeID?: ListPaymentScheduleType;
+
+  @IsNumber()
+  @IsOptional()
+  agentID?: number;
+
+  @IsNumber()
+  @IsOptional()
+  basedOnID?: number;
 }

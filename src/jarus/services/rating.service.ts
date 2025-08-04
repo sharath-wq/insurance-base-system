@@ -29,7 +29,7 @@ export class RatingService {
 
     const quote = this.quoteRepository.findOne({
       where: {
-        id: Number(quoteId),
+        ID: Number(quoteId),
       },
     });
 
@@ -40,7 +40,7 @@ export class RatingService {
     const members = await this.personRepository.find({
       where: {
         quote: {
-          id: Number(quoteId),
+          ID: Number(quoteId),
         },
       },
       relations: [

@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Contact } from './contact.entity';
 
-@Entity('agency')
-export class Agency {
+@Entity('contact_history')
+export class ContactHistory {
   @PrimaryGeneratedColumn()
   ID: number;
 
@@ -13,10 +13,16 @@ export class Agency {
   updateDt: Date;
 
   @Column({ type: 'varchar', nullable: true })
-  number: string;
+  fieldChanged: string;
 
   @ManyToOne(() => Contact, { nullable: true })
-  primaryContact: Contact;
+  contactID: Contact;
+
+  @Column({ type: 'varchar', nullable: true })
+  oldValue: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  newValue: string;
 
   @ManyToOne(() => Contact, { nullable: true })
   updateUser: Contact;

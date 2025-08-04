@@ -1,22 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Insurance } from '../entities/insurance.entity';
+import { Policy } from '../entities/policy.entity';
 import { CreatePolicyDto } from '../dtos/create-policy.dto';
+import { Quote } from '../entities/quote.entity';
 
 @Injectable()
 export class PolicyService {
   constructor(
-    @InjectRepository(Insurance)
-    private policyRepository: Repository<Insurance>,
+    @InjectRepository(Policy)
+    private policyRepository: Repository<Policy>,
   ) {}
 
-  async createPolicy(dto: CreatePolicyDto): Promise<Insurance> {
-    const policy = this.policyRepository.create(dto);
-    return this.policyRepository.save(policy);
+  async createPolicy(dto: CreatePolicyDto): Promise<Policy> {
+    const policy = this.policyRepository.create({
+      ...dto,
+      createDt: new Date(),
+      updateDt: new Date(),
+    } as any);
+    const result = await this.policyRepository.save(policy);
+    return Array.isArray(result) ? result[0] : result;
   }
 
-  async findPoliciesByLob(lobId: number): Promise<Insurance[]> {
-    return this.policyRepository.find({ where: { lob: { id: lobId } } });
+  async findPoliciesByProduct(productId: string): Promise<Policy[]> {
+    return this.policyRepository.find({ where: { productID: productId as any } });
   }
 }

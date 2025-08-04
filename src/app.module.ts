@@ -20,7 +20,8 @@ import { JarusModule } from './jarus/jarus.module';
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [__dirname + '/../**/*.entity.js'],
-        synchronize: true, // Set to false in production
+        synchronize: true, // Enabled for development - disable in production
+        // dropSchema: true, // Removed - only use when you need to completely reset schema
       }),
     }),
     CoreModule,

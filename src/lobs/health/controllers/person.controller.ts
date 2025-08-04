@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { PersonService } from '../services/person.service';
 import { Person } from '../entities/person.entity';

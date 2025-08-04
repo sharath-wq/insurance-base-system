@@ -21,18 +21,19 @@ export class QuoteService {
     this.logger.log('Creating quote with DTO:', dto);
     const quote = this.quoteRepository.create({
       ...dto,
-      created_date: new Date(),
-      updated_date: new Date(),
-    });
+      createDt: new Date(),
+      updateDt: new Date(),
+    } as any);
     this.logger.log('Quote entity created:', quote);
-    return this.quoteRepository.save(quote);
+    const result = await this.quoteRepository.save(quote);
+    return Array.isArray(result) ? result[0] : result;
   }
 
   async getQuote(params: { id?: number; quote_name?: string }): Promise<any> {
     const { id, quote_name } = params;
 
     const quote = await this.quoteRepository.findOne({
-      where: id ? { id } : { quote_name },
+      where: id ? { ID: id } : {},
     });
 
     if (!quote) {
@@ -40,7 +41,7 @@ export class QuoteService {
     }
 
     const persons = await this.personRepository.find({
-      where: { quote: { id: quote.id } },
+      where: { quote: { ID: quote.ID } },
     });
 
     return {

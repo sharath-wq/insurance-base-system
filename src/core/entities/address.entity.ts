@@ -1,39 +1,48 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { State } from './state.entity';
-import { Nationality } from './nationality.entity';
+import { ListState, ListCountry } from '../../common/enums';
+import { Contact } from './contact.entity';
 
 @Entity('address')
 export class Address {
   @PrimaryGeneratedColumn()
-  id: number;
+  ID: number;
 
-  @Column({ type: 'varchar' })
-  address_line1: string;
+  @Column({ type: 'date', nullable: true })
+  createDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  updateDt: Date;
 
   @Column({ type: 'varchar', nullable: true })
-  address_line2: string;
+  addrLine1: string;
 
-  @Column({ type: 'varchar' })
-  postal_code: string;
+  @Column({ type: 'varchar', nullable: true })
+  addrLine2: string;
 
-  @Column({ type: 'varchar', length: 225 })
+  @Column({ type: 'varchar', nullable: true })
   city: string;
 
-  @ManyToOne(() => State)
-  state: State;
+  @Column({ type: 'enum', enum: ListState, nullable: true })
+  state: ListState;
 
-  @ManyToOne(() => Nationality)
-  nationality: Nationality;
+  @Column({ type: 'varchar', nullable: true })
+  postalCd: string;
 
-  @Column({ type: 'varchar', length: 225, nullable: true })
-  latitude: string;
+  @Column({ type: 'enum', enum: ListCountry, nullable: true })
+  country: ListCountry;
 
-  @Column({ type: 'varchar', length: 225, nullable: true })
-  longitude: string;
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: true })
+  latitude: number;
 
-  @Column({ type: 'timestamp', nullable: true })
-  created_date: Date;
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: true })
+  longitude: number;
 
-  @Column({ type: 'timestamp', nullable: true })
-  updated_date: Date;
+  @Column({ type: 'date', nullable: true })
+  effectiveDt: Date;
+
+  @Column({ type: 'date', nullable: true })
+  expirationDt: Date;
+
+  @ManyToOne(() => Contact, { nullable: true })
+  updateUser: Contact;
 }

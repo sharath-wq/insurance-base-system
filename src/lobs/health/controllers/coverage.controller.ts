@@ -28,13 +28,10 @@ export class CoverageController {
   async createCoverage(
     @Body() coverageData: Partial<Coverage>,
   ): Promise<Coverage> {
-    if (typeof coverageData.coverableId !== 'number') {
+    if (typeof coverageData.coverableID !== 'number') {
       throw new Error('coverableId is required and must be a number');
     }
-    return this.coverageService.createCoverage(
-      coverageData,
-      coverageData.coverableId,
-    );
+    return this.coverageService.createCoverage(coverageData);
   }
 
   @Post('cov-term')
@@ -42,17 +39,7 @@ export class CoverageController {
     return this.coverageService.createCovTerm(covTermData);
   }
 
-  @Post('quote')
-  async createQuote(@Body() quoteData: Partial<Quote>): Promise<Quote> {
-    return this.coverageService.createQuote(quoteData);
-  }
-
-  @Post('coverable-type')
-  async createCoverableType(
-    @Body() coverableTypeData: Partial<CoverableType>,
-  ): Promise<CoverableType> {
-    return this.coverageService.createCoverableType(coverableTypeData);
-  }
+  // Removed non-existent methods from coverage service
 
   @Get('quote/:quoteId/coverages')
   async findCoveragesByQuote(
@@ -61,45 +48,5 @@ export class CoverageController {
     return this.coverageService.findCoveragesByQuote(quoteId);
   }
 
-  @Post('quote/:quoteId/coverages')
-  async createCoveragesForQuote(
-    @Param('quoteId', ParseIntPipe) quoteId: number,
-    @Body()
-    body: {
-      coverable: {
-        coverableItemId: number;
-        coverableType: string;
-        accountId: number;
-      };
-      coverages: {
-        category: string;
-        coverages: {
-          name: string;
-          code: string;
-          premium: number;
-          effectiveDate: string;
-          expiryDate: string;
-          terms: {
-            name: string;
-            code: string;
-            limit: number;
-            deductible: number;
-          }[];
-        }[];
-      }[];
-    },
-  ): Promise<Coverage[]> {
-    return this.coverageService.createCoveragesForQuote(
-      quoteId,
-      body.coverable,
-      body.coverages.map((cat) => ({
-        ...cat,
-        coverages: cat.coverages.map((cov) => ({
-          ...cov,
-          effectiveDate: new Date(cov.effectiveDate),
-          expiryDate: new Date(cov.expiryDate),
-        })),
-      })),
-    );
-  }
+  // Removed endpoint that calls non-existent service method
 }
