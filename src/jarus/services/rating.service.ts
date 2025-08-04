@@ -27,7 +27,7 @@ export class RatingService {
 
     const url = `${process.env.JARUS_RATING_URL}/?ApplicationName=Arabian%20Shield&ObjectName=Rating&ObjectType=Ruleset`;
 
-    const quote = this.quoteRepository.findOne({
+    const quote = await this.quoteRepository.findOne({
       where: {
         ID: Number(quoteId),
       },
@@ -76,6 +76,11 @@ export class RatingService {
       );
 
       const extracted = extractPolicyAndMemberDetails(response.data);
+      
+      // Update member premiums and quote premium in the database
+      await this.updateMemberPremiums(quoteId, extracted.memberDetails);
+      await this.updateQuotePremium(quoteId, extracted.policyDetails.fullTermAmount);
+      
       return extracted;
     } catch (error: any) {
       const message =
@@ -86,6 +91,59 @@ export class RatingService {
         `Failed to fetch rating from Jarus: ${message}`,
         status,
       );
+    }
+  }
+
+  private async updateMemberPremiums(quoteId: string, memberDetails: any[]): Promise<void> {
+    try {
+      // Get all members for this quote
+      const members = await this.personRepository.find({
+        where: {
+          quote: {
+            ID: Number(quoteId),
+          },
+        },
+        order: {
+          id: 'ASC', // Ensure consistent ordering
+        },
+      });
+
+      // Update each member's premium based on the rating response
+      for (let i = 0; i < memberDetails.length && i < members.length; i++) {
+        const memberDetail = memberDetails[i];
+        const member = members[i];
+        
+        // Update premium and base_premium from the rating response
+        await this.personRepository.update(
+          { id: member.id },
+          {
+            premium: memberDetail.fullTermAmount,
+            base_premium: memberDetail.base_premium,
+            updated_date: new Date(),
+          },
+        );
+      }
+    } catch (error: any) {
+      console.error('Failed to update member premiums:', error.message);
+      // Don't throw error here to avoid breaking the rating response
+      // Just log the error and continue
+    }
+  }
+
+  private async updateQuotePremium(quoteId: string, fullTermAmount: number): Promise<void> {
+    try {
+      // Update the quote with the total premium amount
+      await this.quoteRepository.update(
+        { ID: Number(quoteId) },
+        {
+          premiumAmt: fullTermAmount,
+          updateDt: new Date(),
+        },
+      );
+    } catch (error: any) {
+      console.error('Failed to update quote premium:', error.message);
+      // Don't throw error here to avoid breaking the rating response
+      // Just log the error and continue
     }
   }
 }
