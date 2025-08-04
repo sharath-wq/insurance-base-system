@@ -12,6 +12,7 @@ import { PolicyContactRole } from './policy-contact-role.entity';
 import { Contact } from './contact.entity';
 import { Coverage } from './coverage.entity';
 import { ListCoverable } from '../../common/enums';
+import { Person } from '../../lobs/health/entities/person.entity';
 
 @Entity('coverable')
 export class Coverable {
@@ -42,6 +43,11 @@ export class Coverable {
   @ManyToOne(() => PolicyContactRole, { nullable: true })
   @JoinColumn({ name: 'contactID' })
   contactID: PolicyContactRole;
+
+  // For health insurance - direct relationship to Person
+  @ManyToOne(() => Person, { nullable: true })
+  @JoinColumn({ name: 'personID' })
+  personID: Person;
 
   @Column({ type: 'date', nullable: true })
   effectiveDt: Date;

@@ -26,6 +26,7 @@ import { Person } from 'src/lobs/health/entities/person.entity';
 import { CoverageService } from './services/coverage.service';
 import { ReferenceDataSeeder } from './seeders/reference-data.seeder';
 import { SeedController } from './controllers/seed.controller';
+import { ContactHistory } from './entities/contact-history.entity';
 
 @Module({
   imports: [

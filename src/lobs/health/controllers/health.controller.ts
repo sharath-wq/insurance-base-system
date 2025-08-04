@@ -16,6 +16,7 @@ import { Quote } from 'src/core/entities/quote.entity';
 import { QuoteService } from 'src/core/services/quote.service';
 import { PersonService } from '../services/person.service';
 import { Coverage } from 'src/core/entities/coverage.entity';
+import { CoverageService } from 'src/core/services/coverage.service';
 
 @Controller('health')
 export class HealthController {
@@ -23,6 +24,7 @@ export class HealthController {
     private readonly healthService: HealthService,
     private readonly quoteService: QuoteService,
     private readonly personService: PersonService,
+    private readonly coverageService: CoverageService,
   ) {}
 
   @Post('policy')
@@ -47,5 +49,25 @@ export class HealthController {
     return this.personService.updatePersons(body.quote_id, body.offering);
   }
 
-  // Removed endpoint for non-existent method
+  @Post('quote/:id/coverages')
+  async createCoveragesForQuote(
+    @Param('id', ParseIntPipe) quoteId: number,
+    @Body() body: any,
+  ): Promise<any> {
+    return this.healthService.createCoveragesForQuote(quoteId, body);
+  }
+
+  @Get('quote/:id/coverages')
+  async getCoveragesForQuote(
+    @Param('id', ParseIntPipe) quoteId: number,
+  ): Promise<Coverage[]> {
+    return this.coverageService.findCoveragesByQuote(quoteId);
+  }
+
+  @Get('quote/:id/persons')
+  async getPersonsInQuote(
+    @Param('id', ParseIntPipe) quoteId: number,
+  ): Promise<any> {
+    return this.personService.findAllByQuoteId(quoteId.toString());
+  }
 }
