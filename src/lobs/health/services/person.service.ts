@@ -10,12 +10,30 @@ import { CreatePersonDto } from '../dtos/create-person.dto';
 import { BulkCreateResponse } from 'src/types/bulk-create-response.interface';
 import { csvBufferToJson } from 'src/utils/csv-buffer-to-json';
 import { RatingService } from 'src/jarus/services/rating.service';
+import { IdentityType } from 'src/core/entities/identity-type.entity';
+import { Nationality } from 'src/core/entities/nationality.entity';
+import { Occupation } from 'src/core/entities/occupation.entity';
+import { Relation } from 'src/core/entities/relation.entity';
+import { MaritalStatus } from 'src/core/entities/marital-status.entity';
+import { Quote } from 'src/core/entities/quote.entity';
 
 @Injectable()
 export class PersonService {
   constructor(
     @InjectRepository(Person)
     private personRepository: Repository<Person>,
+    @InjectRepository(IdentityType)
+    private identityTypeRepository: Repository<IdentityType>,
+    @InjectRepository(Nationality)
+    private nationalityRepository: Repository<Nationality>,
+    @InjectRepository(Occupation)
+    private occupationRepository: Repository<Occupation>,
+    @InjectRepository(Relation)
+    private relationRepository: Repository<Relation>,
+    @InjectRepository(MaritalStatus)
+    private maritalStatusRepository: Repository<MaritalStatus>,
+    @InjectRepository(Quote)
+    private quoteRepository: Repository<Quote>,
     private readonly ratingService: RatingService,
   ) {}
 
@@ -95,16 +113,57 @@ export class PersonService {
       const json = csvBufferToJson(buffer);
       const memberCount = json.length;
 
+      // Get the quote first
+      const quote = await this.quoteRepository.findOne({ where: { ID: Number(quote_id) } });
+      if (!quote) {
+        throw new BadRequestException(`Quote with ID ${quote_id} not found`);
+      }
+
       const people: any[] = [];
 
       for (const record of json) {
-        // Remove the reference code fields and just use basic data
-        const { nationality, identity_type, occupation_code, relation, marital_status, ...basicData } = record;
+        // Extract the reference code fields
+        const { nationality, identity_type_id, occupation_code, relation, marital_status, ...basicData } = record;
+        
+        // Look up foreign key entities
+        let identityType, nationalityRecord, occupation, relationRecord, maritalStatusRecord;
+        
+        if (identity_type_id) {
+          identityType = await this.identityTypeRepository.findOne({ where: { id: identity_type_id } });
+        }
+        
+        if (nationality) {
+          nationalityRecord = await this.nationalityRepository.findOne({ where: { code: nationality } });
+        }
+        
+        if (occupation_code) {
+          occupation = await this.occupationRepository.findOne({ where: { code: occupation_code } });
+        }
+        
+        if (relation) {
+          relationRecord = await this.relationRepository.findOne({ where: { code: relation } });
+        }
+        
+        if (marital_status) {
+          maritalStatusRecord = await this.maritalStatusRepository.findOne({ where: { code: marital_status } });
+        }
         
         const person = this.personRepository.create({
           ...basicData,
-          // Set quote_id as foreign key
-          quote: { ID: Number(quote_id) },
+          // Set quote relationship and foreign key
+          quote,
+          quoteId: quote.ID,
+          // Set other relationships and foreign keys
+          identity_type: identityType,
+          identityTypeId: identityType?.id,
+          nationality: nationalityRecord,
+          nationalityId: nationalityRecord?.id,
+          occupation,
+          occupationId: occupation?.id,
+          relation: relationRecord,
+          relationId: relationRecord?.id,
+          marital_status: maritalStatusRecord,
+          maritalStatusId: maritalStatusRecord?.id,
           insurance_id: `HEALTH-INS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           created_date: new Date(),
           updated_date: new Date(),

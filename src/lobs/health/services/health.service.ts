@@ -81,11 +81,17 @@ export class HealthService {
     const person = this.personRepository.create({
       ...personData,
       quote,
+      quoteId: quote.ID,
       identity_type: identityType,
+      identityTypeId: identityType.id,
       nationality: nationalityRecord,
+      nationalityId: nationalityRecord.id,
       occupation,
+      occupationId: occupation.id,
       relation: relationRecord,
+      relationId: relationRecord.id,
       marital_status: maritalStatus,
+      maritalStatusId: maritalStatus.id,
     });
 
     // Create policy with new schema

@@ -4,7 +4,7 @@ import { Nationality } from 'src/core/entities/nationality.entity';
 import { Occupation } from 'src/core/entities/occupation.entity';
 import { Quote } from 'src/core/entities/quote.entity';
 import { Relation } from 'src/core/entities/relation.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('person')
 export class Person {
@@ -12,7 +12,11 @@ export class Person {
   id: number;
 
   @ManyToOne(() => Quote)
+  @JoinColumn({ name: 'quoteId' })
   quote: Quote;
+
+  @Column({ type: 'integer', nullable: true })
+  quoteId: number;
 
   @Column({ type: 'integer' })
   identity_no: number;
@@ -42,7 +46,11 @@ export class Person {
   offering_code: string;
 
   @ManyToOne(() => IdentityType)
+  @JoinColumn({ name: 'identityTypeId' })
   identity_type: IdentityType;
+
+  @Column({ type: 'integer', nullable: true })
+  identityTypeId: number;
 
   @Column({ type: 'varchar', length: 225 })
   name_en: string;
@@ -57,16 +65,32 @@ export class Person {
   mobile: number;
 
   @ManyToOne(() => Nationality)
+  @JoinColumn({ name: 'nationalityId' })
   nationality: Nationality;
 
+  @Column({ type: 'integer', nullable: true })
+  nationalityId: number;
+
   @ManyToOne(() => Occupation)
+  @JoinColumn({ name: 'occupationId' })
   occupation: Occupation;
 
+  @Column({ type: 'integer', nullable: true })
+  occupationId: number;
+
   @ManyToOne(() => Relation)
+  @JoinColumn({ name: 'relationId' })
   relation: Relation;
 
+  @Column({ type: 'integer', nullable: true })
+  relationId: number;
+
   @ManyToOne(() => MaritalStatus)
+  @JoinColumn({ name: 'maritalStatusId' })
   marital_status: MaritalStatus;
+
+  @Column({ type: 'integer', nullable: true })
+  maritalStatusId: number;
 
   @Column({ type: 'varchar', length: 225 })
   gender_code: string;
