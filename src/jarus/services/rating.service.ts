@@ -65,6 +65,7 @@ export class RatingService {
 
     const body = createPayload(createPayloadInputs);
 
+    console.log('Rating request body:', JSON.stringify(body, null, 2));
     try {
       const response = await firstValueFrom(
         this.httpService.post(url, body, {
@@ -76,11 +77,11 @@ export class RatingService {
       );
 
       const extracted = extractPolicyAndMemberDetails(response.data);
-      
+
       // Update member premiums and quote premium in the database
       await this.updateMemberPremiums(quoteId, extracted.memberDetails);
       await this.updateQuotePremium(quoteId, extracted.policyDetails);
-      
+
       return extracted;
     } catch (error: any) {
       const message =
@@ -94,7 +95,10 @@ export class RatingService {
     }
   }
 
-  private async updateMemberPremiums(quoteId: string, memberDetails: any[]): Promise<void> {
+  private async updateMemberPremiums(
+    quoteId: string,
+    memberDetails: any[],
+  ): Promise<void> {
     try {
       // Get all members for this quote
       const members = await this.personRepository.find({
@@ -112,7 +116,7 @@ export class RatingService {
       for (let i = 0; i < memberDetails.length && i < members.length; i++) {
         const memberDetail = memberDetails[i];
         const member = members[i];
-        
+
         // Update premium and base_premium from the rating response
         await this.personRepository.update(
           { id: member.id },
@@ -130,7 +134,10 @@ export class RatingService {
     }
   }
 
-  private async updateQuotePremium(quoteId: string, policyDetails: any): Promise<void> {
+  private async updateQuotePremium(
+    quoteId: string,
+    policyDetails: any,
+  ): Promise<void> {
     try {
       // Update the quote with the total premium amount and tax amount
       await this.quoteRepository.update(

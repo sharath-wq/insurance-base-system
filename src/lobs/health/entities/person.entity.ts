@@ -4,7 +4,13 @@ import { Nationality } from 'src/core/entities/nationality.entity';
 import { Occupation } from 'src/core/entities/occupation.entity';
 import { Quote } from 'src/core/entities/quote.entity';
 import { Relation } from 'src/core/entities/relation.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity('person')
 export class Person {
@@ -95,13 +101,13 @@ export class Person {
   @Column({ type: 'varchar', length: 225 })
   gender_code: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', nullable: true })
   company_id: number;
 
-  @Column({ type: 'varchar', length: 225 })
+  @Column({ type: 'varchar', length: 225, default: 'Primary' })
   member_type: string;
 
-  @Column({ type: 'varchar', length: 225 })
+  @Column({ type: 'varchar', length: 225, default: 'Active' })
   member_status: string;
 
   @Column({ type: 'integer', nullable: true })
@@ -131,7 +137,7 @@ export class Person {
   @Column({ type: 'varchar', length: 225, nullable: true })
   endorsment_type: string;
 
-  @Column({ type: 'varchar', length: 225 })
+  @Column({ type: 'varchar', length: 225, nullable: true })
   insurance_id: string;
 
   @Column({ type: 'timestamp', nullable: true })

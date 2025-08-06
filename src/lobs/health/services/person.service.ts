@@ -38,7 +38,38 @@ export class PersonService {
   ) {}
 
   async create(createPersonDto: CreatePersonDto): Promise<Person> {
-    const person = this.personRepository.create(createPersonDto as any);
+    const startDate = new Date();
+    const endDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000); // One year after start date
+
+    const nationality = await this.nationalityRepository.findOne({
+      where: { code: createPersonDto.nationality },
+    });
+
+    const occupation = await this.occupationRepository.findOne({
+      where: { code: createPersonDto.occupation_code },
+    });
+
+    const relation = await this.relationRepository.findOne({
+      where: { code: createPersonDto.relation },
+    });
+
+    const maritalStatus = await this.maritalStatusRepository.findOne({
+      where: { code: createPersonDto.marital_status },
+    });
+
+    const person = this.personRepository.create({
+      ...(createPersonDto as any),
+      quoteId: createPersonDto.quote_id,
+      start_date: startDate,
+      expiry_date: endDate,
+      nationalityId: nationality?.id,
+      occupationId: occupation?.id,
+      relationId: relation?.id,
+      maritalStatusId: maritalStatus?.id,
+      identityTypeId: createPersonDto.identity_type_id,
+      created_date: new Date(),
+      updated_date: new Date(),
+    });
     const saved = await this.personRepository.save(person);
     return saved as unknown as Person;
   }
@@ -87,9 +118,7 @@ export class PersonService {
       ],
     });
     if (!person) {
-      throw new NotFoundException(
-        `Person with ID ${id} not found`,
-      );
+      throw new NotFoundException(`Person with ID ${id} not found`);
     }
     return person;
   }
@@ -114,40 +143,62 @@ export class PersonService {
       const memberCount = json.length;
 
       // Get the quote first
-      const quote = await this.quoteRepository.findOne({ where: { ID: Number(quote_id) } });
+      const quote = await this.quoteRepository.findOne({
+        where: { ID: Number(quote_id) },
+      });
       if (!quote) {
         throw new BadRequestException(`Quote with ID ${quote_id} not found`);
       }
 
       const people: any[] = [];
-
       for (const record of json) {
         // Extract the reference code fields
-        const { nationality, identity_type_id, occupation_code, relation, marital_status, ...basicData } = record;
-        
+        const {
+          nationality,
+          identity_type_id,
+          occupation_code,
+          relation,
+          marital_status,
+          ...basicData
+        } = record;
+
         // Look up foreign key entities
-        let identityType, nationalityRecord, occupation, relationRecord, maritalStatusRecord;
-        
+        let identityType,
+          nationalityRecord,
+          occupation,
+          relationRecord,
+          maritalStatusRecord;
+
         if (identity_type_id) {
-          identityType = await this.identityTypeRepository.findOne({ where: { id: identity_type_id } });
+          identityType = await this.identityTypeRepository.findOne({
+            where: { id: identity_type_id },
+          });
         }
-        
+
         if (nationality) {
-          nationalityRecord = await this.nationalityRepository.findOne({ where: { code: nationality } });
+          nationalityRecord = await this.nationalityRepository.findOne({
+            where: { code: nationality },
+          });
         }
-        
+
         if (occupation_code) {
-          occupation = await this.occupationRepository.findOne({ where: { code: occupation_code } });
+          occupation = await this.occupationRepository.findOne({
+            where: { code: occupation_code },
+          });
         }
-        
+
         if (relation) {
-          relationRecord = await this.relationRepository.findOne({ where: { code: relation } });
+          relationRecord = await this.relationRepository.findOne({
+            where: { code: relation },
+          });
         }
-        
+
         if (marital_status) {
-          maritalStatusRecord = await this.maritalStatusRepository.findOne({ where: { code: marital_status } });
+          maritalStatusRecord = await this.maritalStatusRepository.findOne({
+            where: { code: marital_status },
+          });
         }
-        
+
         const person = this.personRepository.create({
           ...basicData,
           // Set quote relationship and foreign key
@@ -164,7 +215,6 @@ export class PersonService {
           relationId: relationRecord?.id,
           marital_status: maritalStatusRecord,
           maritalStatusId: maritalStatusRecord?.id,
-          insurance_id: `HEALTH-INS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           created_date: new Date(),
           updated_date: new Date(),
         } as any);
