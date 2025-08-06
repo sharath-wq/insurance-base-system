@@ -5,6 +5,7 @@ import { CoreModule } from './core/core.module';
 import { HealthModule } from './lobs/health/health.module';
 import { AutoModule } from './lobs/auto/auto.module';
 import { JarusModule } from './jarus/jarus.module';
+import { ExternalIntegrationModule } from './external-integration/external-integration.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { JarusModule } from './jarus/jarus.module';
     HealthModule,
     AutoModule,
     JarusModule,
+    ExternalIntegrationModule,
   ],
 })
 export class AppModule {}

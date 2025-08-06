@@ -82,3 +82,7 @@ VALUES
 INSERT INTO driver (id, contact_id, created_date, updated_date)
 VALUES (1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- Insert into yakeen
+INSERT INTO yakeen (id, iqama_id, data)
+VALUES (5, '2396487538', '{ "getUserInfoResponse": { "logId": 3, "gender": "GT02", "lastName": "عبدالله", "firstName": "نورا", "thirdName": "", "secondName": "عبدالعزيز", "lastUpdated": "2025-01-07T17:29:48.000+0000", "sponsorName": "", "dateOfBirthH": "1992-11-02", "maritalStatus": "S", "occupationCode": "07", "englishLastName": "ABDULLAH", "nationalityCode": "Om", "englishFirstName": "NORA", "englishThirdName": "", "iqamaExpiryDateG": "22-09-2026", "iqamaExpiryDateH": "10-02-1448", "socialStatusCode": 1, "sponsorMoiNumber": 7014003344, "englishSecondName": "ABDULAZIZ", "iqamaIssuePlaceDesc": "جوازات المدينة" } }');
+
