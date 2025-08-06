@@ -66,7 +66,7 @@ export class PersonService {
       occupationId: occupation?.id,
       relationId: relation?.id,
       maritalStatusId: maritalStatus?.id,
-      identityTypeId: createPersonDto.identity_type_id,
+      identityTypeId: 1,
       created_date: new Date(),
       updated_date: new Date(),
     });
@@ -206,7 +206,7 @@ export class PersonService {
           quoteId: quote.ID,
           // Set other relationships and foreign keys
           identity_type: identityType,
-          identityTypeId: identityType?.id,
+          identityTypeId: identityType?.id || 1,
           nationality: nationalityRecord,
           nationalityId: nationalityRecord?.id,
           occupation,
